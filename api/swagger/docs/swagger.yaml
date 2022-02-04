@@ -1,0 +1,133 @@
+definitions:
+  model.ShopItem:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      title:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /shopitem/:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all the shopitems
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.ShopItem'
+            type: array
+        "500":
+          description: ""
+      summary: Retrieves all the shopitems
+      tags:
+      - shopitem
+    put:
+      consumes:
+      - application/json
+      description: Updates a  ShopItem with the supplied ShopItem object
+      parameters:
+      - description: ShopItemID
+        in: body
+        name: shopItem
+        required: true
+        schema:
+          $ref: '#/definitions/model.ShopItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ShopItem'
+        "404":
+          description: ""
+        "500":
+          description: ""
+      summary: Updates a ShopItem
+      tags:
+      - shopitem
+  /shopitem/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a  ShopItem with the supplied id value
+      parameters:
+      - description: ShopItemID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ShopItem'
+        "404":
+          description: ""
+        "500":
+          description: ""
+      summary: Deletes a ShopItem
+      tags:
+      - shopitem
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a ShopItem with the supplied id value
+      parameters:
+      - description: ShopItemID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ShopItem'
+        "404":
+          description: ""
+        "500":
+          description: ""
+      summary: Retrieves a ShopItem
+      tags:
+      - shopitem
+    post:
+      consumes:
+      - application/json
+      description: Returns the new  {object} model.ShopItem that was created
+      parameters:
+      - description: ShopItemID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ShopItem'
+        "404":
+          description: ""
+        "500":
+          description: ""
+      summary: Create a ShopItem
+      tags:
+      - shopitem
+swagger: "2.0"

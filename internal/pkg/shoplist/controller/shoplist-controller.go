@@ -21,8 +21,17 @@ type ShopListControllerImpl struct {
 	Repository repository.ShopListRepository
 }
 
+// @Summary      Create a ShopItem
+// @Description  Returns the new  {object} model.ShopItem that was created
+// @Tags         shopitem
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "ShopItemID"
+// @Success      200  {object}  model.ShopItem
+// @Failure		 500
+// @Failure 	 404
+// @Router       /shopitem/{id} [post]
 func (s ShopListControllerImpl) Create(ctx *gin.Context) {
-
 	var shopItem model.ShopItem
 
 	ctx.BindJSON(&shopItem)
@@ -31,6 +40,7 @@ func (s ShopListControllerImpl) Create(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.Status(http.StatusInternalServerError)
+		return
 	}
 
 	if affectedRows > 0 {
@@ -38,6 +48,16 @@ func (s ShopListControllerImpl) Create(ctx *gin.Context) {
 	}
 }
 
+// @Summary      Updates a ShopItem
+// @Description  Updates a  ShopItem with the supplied ShopItem object
+// @Tags         shopitem
+// @Accept       json
+// @Produce      json
+// @Param        shopItem  body model.ShopItem  true  "ShopItemID"
+// @Success      200  {object}  model.ShopItem
+// @Failure		 500
+// @Failure 	 404
+// @Router       /shopitem/ [put]
 func (s ShopListControllerImpl) Update(ctx *gin.Context) {
 	var shopItem model.ShopItem
 
@@ -54,10 +74,17 @@ func (s ShopListControllerImpl) Update(ctx *gin.Context) {
 	}
 }
 
+// @Summary      Deletes a ShopItem
+// @Description  Deletes a  ShopItem with the supplied id value
+// @Tags         shopitem
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "ShopItemID"
+// @Success      200  {object}  model.ShopItem
+// @Failure		 500
+// @Failure 	 404
+// @Router       /shopitem/{id} [delete]
 func (s ShopListControllerImpl) Delete(ctx *gin.Context) {
-	var shopItem model.ShopItem
-
-	ctx.BindJSON(&shopItem)
 
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 
@@ -72,17 +99,30 @@ func (s ShopListControllerImpl) Delete(ctx *gin.Context) {
 	}
 
 	if affectedRows > 0 {
-		ctx.JSON(http.StatusAccepted, shopItem)
+		ctx.Status(http.StatusAccepted)
+
+		return
 	}
+
+	ctx.Status(http.StatusNotModified)
 }
 
+// @Summary      Retrieves a ShopItem
+// @Description  Retrieves a ShopItem with the supplied id value
+// @Tags         shopitem
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "ShopItemID"
+// @Success      200  {object}  model.ShopItem
+// @Failure		 500
+// @Failure 	 404
+// @Router       /shopitem/{id} [get]
 func (s ShopListControllerImpl) Get(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 
 	if err != nil {
 		ctx.Status(http.StatusInternalServerError)
 	}
-
 
 	shopItem, err := s.Repository.Get(id)
 
@@ -92,9 +132,23 @@ func (s ShopListControllerImpl) Get(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, shopItem)
+	if shopItem != nil {
+		ctx.JSON(http.StatusAccepted, shopItem)
+		return
+	}
+
+	ctx.Status(http.StatusNotFound)
+
 }
 
+// @Summary      Retrieves all the shopitems
+// @Description  Retrieves all the shopitems
+// @Tags         shopitem
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  []model.ShopItem
+// @Failure		 500
+// @Router       /shopitem/ [get]
 func (s ShopListControllerImpl) GetAll(ctx *gin.Context) {
 
 	items, err := s.Repository.GetAll()
@@ -106,6 +160,4 @@ func (s ShopListControllerImpl) GetAll(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, items)
-
 }
-
