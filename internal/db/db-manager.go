@@ -41,11 +41,6 @@ func (d DbManagerImpl) ExecDDL(db *sql.DB) error {
 }
 
 func (d DbManagerImpl) NewConnection() (*sql.DB, error) {
-	//address := "localhost"
-	//port := "3306"
-	//database := "db"
-	//user := "user"
-	//password := "12345!"
 	param := "parseTime=true"
 
 	secretData, err := config.GetSecret()

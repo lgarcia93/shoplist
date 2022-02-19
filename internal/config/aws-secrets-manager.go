@@ -10,11 +10,11 @@ import (
 )
 
 type SecretData struct {
-	MySQLUser         string `json:"mysql_user"`
-	MySQLPass         string `json:"mysql_pass"`
-	MySQLPort         string `json:"mysql_port"`
-	MySQLAddress      string `json:"mysql_address"`
-	MySQLDatabaseName string `json:"mysql_db"`
+	MySQLUser         string `json:"username"`
+	MySQLPass         string `json:"password"`
+	MySQLPort         string `json:"port"`
+	MySQLAddress      string `json:"host"`
+	MySQLDatabaseName string `json:"dbInstanceIdentifier"`
 }
 
 func GetSecret() (*SecretData, error) {
