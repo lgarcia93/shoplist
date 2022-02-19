@@ -25,7 +25,6 @@ WORKDIR /
 
 COPY --from=build /docker-go-shoplist /docker-go-shoplist
 
-
 EXPOSE 5000
 
 ENTRYPOINT ["/docker-go-shoplist"]
