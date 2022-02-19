@@ -52,5 +52,5 @@ func InitializeHandlers() {
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
-	r.Run() // listen and serve o
+	r.Run(":5000") // listen and serve o
 }
