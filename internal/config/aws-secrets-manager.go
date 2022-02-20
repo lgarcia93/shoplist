@@ -10,7 +10,7 @@ import (
 type SecretData struct {
 	MySQLUser         string `json:"username"`
 	MySQLPass         string `json:"password"`
-	MySQLPort         string `json:"port"`
+	MySQLPort         int    `json:"port"`
 	MySQLAddress      string `json:"host"`
 	MySQLDatabaseName string `json:"dbInstanceIdentifier"`
 }
