@@ -45,7 +45,7 @@ func (d DbManagerImpl) NewConnection() (*sql.DB, error) {
 
 	secretData := config.GetSecret()
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
 		secretData.MySQLUser,
 		secretData.MySQLPass,
 		secretData.MySQLAddress,
