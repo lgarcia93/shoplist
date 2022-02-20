@@ -2,6 +2,8 @@
 
 FROM golang:1.17-alpine AS build
 
+RUN apk add -U --no-cache ca-certificates
+
 WORKDIR /app
 
 COPY ./go.mod ./
@@ -20,6 +22,8 @@ RUN swag init -g cmd/shoplist/main.go  --parseDependency
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /docker-go-shoplist ./cmd/shoplist/main.go
 
 FROM scratch
+
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 WORKDIR /
 
