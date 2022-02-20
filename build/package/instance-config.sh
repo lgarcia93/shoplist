@@ -31,7 +31,7 @@ git checkout master
 sudo docker rm -f docker-shoplist:latest
 
 # Build the docker image
-sudo docker build  --no-cache --tag docker-shoplist:latest -f build/package/Dockerfile .
+sudo docker build  --build-arg app_env=prod  --no-cache --tag docker-shoplist:latest -f build/package/Dockerfile .
 
 # Run container mapping host port 3000 to container's port 5000
 docker run -p 3000:5000 docker-shoplist --tail

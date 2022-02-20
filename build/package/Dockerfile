@@ -31,6 +31,10 @@ COPY --from=build /docker-go-shoplist /docker-go-shoplist
 
 EXPOSE 5000
 
-ENV shoplist_api_env=prod
+ARG app_env="dev"
+ARG app_host_port=3000
+
+ENV shoplist_api_env=$app_env
+ENV shoplist_api_port=$app_host_port
 
 ENTRYPOINT ["/docker-go-shoplist"]

@@ -1,6 +1,7 @@
 package starter
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lgarcia93/shoplist/internal/db"
 	"github.com/lgarcia93/shoplist/internal/pkg/shoplist/controller"
@@ -28,13 +29,13 @@ import (
 
 // @securityDefinitions.basic  BasicAuth
 func InitializeHandlers() {
-	r := gin.Default()
-
 	env := getAppEnv()
 
-	if env == "prod" {
-		gin.SetMode(gin.ReleaseMode)
-	}
+	//if env == "prod" {
+	//	gin.SetMode(gin.ReleaseMode)
+	//}
+
+	r := gin.Default()
 
 	db, err := db.DbManagerImpl{}.NewConnection(env)
 
@@ -61,7 +62,8 @@ func InitializeHandlers() {
 		}
 	}
 
-	r.Run(":5000") // listen and serve o
+	// listen and serve
+	r.Run(fmt.Sprintf(":%s", getAppPort()))
 }
 
 func getAppEnv() string {
@@ -69,6 +71,16 @@ func getAppEnv() string {
 
 	if env == "" {
 		env = "dev"
+	}
+
+	return env
+}
+
+func getAppPort() string {
+	env := os.Getenv("shoplist_api_port")
+
+	if env == "" {
+		env = "3000"
 	}
 
 	return env
