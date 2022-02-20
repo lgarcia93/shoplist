@@ -8,11 +8,12 @@ import (
 )
 
 type SecretData struct {
-	MySQLUser         string `json:"username"`
-	MySQLPass         string `json:"password"`
-	MySQLPort         int    `json:"port"`
-	MySQLAddress      string `json:"host"`
-	MySQLDatabaseName string `json:"dbInstanceIdentifier"`
+	MySQLUser               string `json:"username"`
+	MySQLPass               string `json:"password"`
+	MySQLPort               int    `json:"port"`
+	MySQLAddress            string `json:"host"`
+	MySQLDatabaseName       string `json:"dbname"`
+	MySQLInstanceIdentifier string `json:"dbInstanceIdentifier"`
 }
 
 func GetSecret() SecretData {
@@ -21,7 +22,10 @@ func GetSecret() SecretData {
 	versionStage := "AWSCURRENT"
 
 	sess, err := session.NewSession()
-	svc := secretsmanager.New(sess, aws.NewConfig().WithRegion(region))
+	svc := secretsmanager.New(
+		sess,
+		aws.NewConfig().WithRegion(region),
+	)
 
 	input := &secretsmanager.GetSecretValueInput{
 		SecretId:     aws.String(secretName),

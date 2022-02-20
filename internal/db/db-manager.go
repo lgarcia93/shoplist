@@ -6,7 +6,6 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/lgarcia93/shoplist/internal/config"
-	"io/ioutil"
 	"log"
 )
 
@@ -27,15 +26,7 @@ func (d DbManagerImpl) ExecDDL(db *sql.DB) error {
 		return err
 	}
 
-	buffer, err := ioutil.ReadFile("ddl.sql")
-
-	if err != nil {
-		return err
-	}
-
-	ddlContent := string(buffer)
-
-	c.ExecContext(ctx, ddlContent)
+	c.ExecContext(ctx, dbDDL)
 
 	return nil
 }
