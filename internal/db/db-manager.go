@@ -64,7 +64,7 @@ func (d DbManagerImpl) NewConnection() (*sql.DB, error) {
 	err = d.ExecDDL(db)
 
 	if err != nil {
-		return nil, err
+		log.Fatal("error executing DDL %v", err)
 	}
 
 	return db, nil
