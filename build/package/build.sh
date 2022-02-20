@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-docker rm -f docker-shoplist:latest
-docker build  --no-cache --tag docker-shoplist:latest -f build/package/Dockerfile .
+git pull origin master
 
-#docker run docker-shoplist:latest
+sudo docker rm -f docker-shoplist:latest
+
+sudo docker build  --no-cache --tag docker-shoplist:latest -f build/package/Dockerfile .
