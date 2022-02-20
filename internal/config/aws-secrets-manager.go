@@ -16,7 +16,7 @@ type SecretData struct {
 }
 
 func GetSecret() SecretData {
-	secretName := "dev/shopList/mysql-SHysJi"
+	secretName := "dev/shopList/mysql"
 	region := "us-east-1"
 	versionStage := "AWSCURRENT"
 
