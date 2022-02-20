@@ -50,13 +50,13 @@ func (s shopListRepositoryImpl) Create(item model.ShopItem) (int64, error) {
 	)
 
 	if err != nil {
-		fmt.Errorf("error insert data %v", err)
+		return 0, err
 	}
 
 	id, err := res.LastInsertId()
 
 	if err != nil {
-		fmt.Errorf("error obtaining last insert ID %v", err)
+		return 0, err
 	}
 
 	return id, err
@@ -83,13 +83,13 @@ func (s shopListRepositoryImpl) Update(item model.ShopItem) (int64, error) {
 	)
 
 	if err != nil {
-		return 0, fmt.Errorf("error updating the shopitem")
+		return 0, err
 	}
 
 	affectedRows, err := res.RowsAffected()
 
 	if err != nil {
-		return 0, fmt.Errorf( "error obtaining affected rows")
+		return 0, fmt.Errorf("error obtaining affected rows")
 	}
 
 	return affectedRows, err
@@ -118,7 +118,7 @@ func (s shopListRepositoryImpl) Delete(id int64) (int64, error) {
 	affectedRows, err := res.RowsAffected()
 
 	if err != nil {
-		return 0, fmt.Errorf( "error obtaining affected rows")
+		return 0, fmt.Errorf("error obtaining affected rows")
 	}
 
 	return affectedRows, err
@@ -151,7 +151,7 @@ func (s shopListRepositoryImpl) Get(id int64) (*model.ShopItem, error) {
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("error reading record")
+		return nil, err
 	}
 
 	return &shopItem, nil
@@ -163,7 +163,7 @@ func (s shopListRepositoryImpl) GetAll() ([]*model.ShopItem, error) {
 	c, err := s.connect(ctx)
 
 	if err != nil {
-		return []*model.ShopItem{}, fmt.Errorf("error obtaining connection")
+		return make([]*model.ShopItem, 0), fmt.Errorf("error obtaining connection")
 	}
 
 	defer c.Close()
@@ -173,7 +173,11 @@ func (s shopListRepositoryImpl) GetAll() ([]*model.ShopItem, error) {
 		"select id, title, description, price from ShopItem",
 	)
 
-	var shopItems []*model.ShopItem
+	if err != nil {
+		return nil, err
+	}
+
+	shopItems := make([]*model.ShopItem, 0)
 
 	for rows.Next() {
 		var shopItem model.ShopItem
@@ -184,16 +188,15 @@ func (s shopListRepositoryImpl) GetAll() ([]*model.ShopItem, error) {
 			&shopItem.Description,
 			&shopItem.Price,
 		); err != nil {
-			return nil, fmt.Errorf("error reading records")
+			return nil, err
 		}
 
 		shopItems = append(shopItems, &shopItem)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error retrieving data")
+		return shopItems, err
 	}
 
 	return shopItems, nil
 }
-

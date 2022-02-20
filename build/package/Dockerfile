@@ -31,4 +31,6 @@ COPY --from=build /docker-go-shoplist /docker-go-shoplist
 
 EXPOSE 5000
 
+ENV shoplist_api_env=prod
+
 ENTRYPOINT ["/docker-go-shoplist"]

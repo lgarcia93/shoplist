@@ -10,7 +10,7 @@ import (
 )
 
 type DbManager interface {
-	NewConnection() (*sql.DB, error)
+	NewConnection(env string) (*sql.DB, error)
 	ExecDDL(db *sql.DB) error
 }
 
@@ -31,10 +31,23 @@ func (d DbManagerImpl) ExecDDL(db *sql.DB) error {
 	return nil
 }
 
-func (d DbManagerImpl) NewConnection() (*sql.DB, error) {
+func (d DbManagerImpl) NewConnection(env string) (*sql.DB, error) {
 	param := "parseTime=true"
 
-	secretData := config.GetSecret()
+	var secretData config.SecretData
+
+	if env == "prod" {
+		secretData = config.GetSecret()
+	} else {
+		secretData = config.SecretData{
+			MySQLUser:               "user",
+			MySQLPass:               "12345!",
+			MySQLPort:               3306,
+			MySQLAddress:            "localhost",
+			MySQLDatabaseName:       "db",
+			MySQLInstanceIdentifier: "",
+		}
+	}
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
 		secretData.MySQLUser,

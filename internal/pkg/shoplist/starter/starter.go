@@ -8,6 +8,7 @@ import (
 	"github.com/swaggo/files"       //
 	"github.com/swaggo/gin-swagger" // gin-swagger middleware
 	"log"
+	"os"
 )
 
 // @title           Swagger Example API
@@ -29,7 +30,13 @@ import (
 func InitializeHandlers() {
 	r := gin.Default()
 
-	db, err := db.DbManagerImpl{}.NewConnection()
+	env := getAppEnv()
+
+	if env == "prod" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	db, err := db.DbManagerImpl{}.NewConnection(env)
 
 	defer db.Close()
 
@@ -41,16 +48,28 @@ func InitializeHandlers() {
 		Repository: repository.NewShopListRepository(db),
 	}
 
-	r.Group("/api/v1")
+	g := r.Group("/api/v1")
 	{
-		r.POST("/shopitem", c.Create)
-		r.PUT("/shopitem", c.Update)
-		r.DELETE("/shopitem/:id", c.Delete)
-		r.GET("/shopitem", c.GetAll)
-		r.GET("/shopitem/:id", c.Get)
+		g.POST("/shopitem", c.Create)
+		g.PUT("/shopitem", c.Update)
+		g.DELETE("/shopitem/:id", c.Delete)
+		g.GET("/shopitem", c.GetAll)
+		g.GET("/shopitem/:id", c.Get)
 
-		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		if getAppEnv() == "dev" {
+			g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		}
 	}
 
 	r.Run(":5000") // listen and serve o
+}
+
+func getAppEnv() string {
+	env := os.Getenv("shoplist_api_env")
+
+	if env == "" {
+		env = "dev"
+	}
+
+	return env
 }
