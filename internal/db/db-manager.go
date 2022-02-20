@@ -43,7 +43,7 @@ func (d DbManagerImpl) ExecDDL(db *sql.DB) error {
 func (d DbManagerImpl) NewConnection() (*sql.DB, error) {
 	param := "parseTime=true"
 
-	secretData, err := config.GetSecret()
+	secretData := config.GetSecret()
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s",
 		secretData.MySQLUser,
