@@ -17,7 +17,7 @@ RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 RUN go mod vendor
 
-RUN swag init -g cmd/shoplist/main.go  --parseDependency
+RUN swag init -g cmd/shoplist/main.go --parseDependency
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /docker-go-shoplist ./cmd/shoplist/main.go
 

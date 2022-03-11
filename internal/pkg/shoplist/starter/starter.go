@@ -37,17 +37,19 @@ func InitializeHandlers() {
 
 	r := gin.Default()
 
-	db, err := db.DbManagerImpl{}.NewConnection(env)
+	database, err := db.DbManagerImpl{}.NewConnection(env)
 
-	defer db.Close()
+	defer database.Close()
 
 	if err != nil {
 		log.Fatalln("error opening connection")
 	}
 
 	c := controller.ShopListControllerImpl{
-		Repository: repository.NewShopListRepository(db),
+		Repository: repository.NewShopListRepository(database),
 	}
+
+	r.GET("/health", controller.HealthCheck)
 
 	g := r.Group("/api/v1")
 	{
