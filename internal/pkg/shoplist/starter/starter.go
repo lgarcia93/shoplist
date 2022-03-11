@@ -12,9 +12,9 @@ import (
 	"os"
 )
 
-// @title           Swagger Example API
+// @title           Shoplist API
 // @version         1.0
-// @description     This is a sample server celler server.
+// @description     This is an API to save and retrieve Shoplist Items
 // @termsOfService  http://swagger.io/terms/
 
 // @contact.name   API Support
@@ -24,7 +24,7 @@ import (
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      localhost:8080
+// @host      localhost:3000
 // @BasePath  /api/v1
 
 // @securityDefinitions.basic  BasicAuth
