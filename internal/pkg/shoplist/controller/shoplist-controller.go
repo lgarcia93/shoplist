@@ -36,16 +36,14 @@ func (s ShopListControllerImpl) Create(ctx *gin.Context) {
 
 	ctx.BindJSON(&shopItem)
 
-	affectedRows, err := s.Repository.Create(shopItem)
+	err := s.Repository.Create(shopItem)
 
 	if err != nil {
 		ctx.Status(http.StatusInternalServerError)
 		return
 	}
 
-	if affectedRows > 0 {
-		ctx.JSON(http.StatusAccepted, shopItem)
-	}
+	ctx.JSON(http.StatusAccepted, shopItem)
 }
 
 // @Summary      Updates a ShopItem
@@ -63,15 +61,13 @@ func (s ShopListControllerImpl) Update(ctx *gin.Context) {
 
 	ctx.BindJSON(&shopItem)
 
-	affectedRows, err := s.Repository.Update(shopItem)
+	err := s.Repository.Update(shopItem)
 
 	if err != nil {
 		ctx.Status(http.StatusInternalServerError)
 	}
 
-	if affectedRows > 0 {
-		ctx.JSON(http.StatusAccepted, shopItem)
-	}
+	ctx.JSON(http.StatusAccepted, shopItem)
 }
 
 // @Summary      Deletes a ShopItem
@@ -92,19 +88,14 @@ func (s ShopListControllerImpl) Delete(ctx *gin.Context) {
 		ctx.Status(http.StatusInternalServerError)
 	}
 
-	affectedRows, err := s.Repository.Delete(id)
+	err = s.Repository.Delete(id)
 
 	if err != nil {
 		ctx.Status(http.StatusInternalServerError)
 	}
 
-	if affectedRows > 0 {
-		ctx.Status(http.StatusAccepted)
+	ctx.Status(http.StatusAccepted)
 
-		return
-	}
-
-	ctx.Status(http.StatusNotModified)
 }
 
 // @Summary      Retrieves a ShopItem
@@ -124,7 +115,7 @@ func (s ShopListControllerImpl) Get(ctx *gin.Context) {
 		ctx.Status(http.StatusInternalServerError)
 	}
 
-	shopItem, err := s.Repository.Get(id)
+	shopItem, err := s.Repository.GetByID(id)
 
 	if err != nil {
 		ctx.Status(http.StatusInternalServerError)

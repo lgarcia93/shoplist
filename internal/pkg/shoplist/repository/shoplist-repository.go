@@ -12,10 +12,10 @@ type repository interface {
 }
 
 type ShopListRepository interface {
-	Create(item model.ShopItem) (int64, error)
-	Update(item model.ShopItem) (int64, error)
-	Delete(id int64) (int64, error)
-	Get(id int64) (*model.ShopItem, error)
+	Create(item model.ShopItem) error
+	Update(item model.ShopItem) error
+	Delete(id int64) error
+	GetByID(id int64) (*model.ShopItem, error)
 	GetAll() ([]*model.ShopItem, error)
 }
 
@@ -33,49 +33,42 @@ func (s shopListRepositoryImpl) connect(ctx context.Context) (*sql.Conn, error) 
 	return s.db.Conn(ctx)
 }
 
-func (s shopListRepositoryImpl) Create(item model.ShopItem) (int64, error) {
+func (s shopListRepositoryImpl) Create(item model.ShopItem) error {
 	ctx := context.Background()
 	c, err := s.connect(ctx)
 
 	if err != nil {
-		return 0, fmt.Errorf("error connecting to database")
+		return fmt.Errorf("error connecting to database")
 	}
 
 	defer c.Close()
 
-	res, err := c.ExecContext(ctx, "insert into ShopItem(title, description, price) values(?, ?, ?)",
+	prepared, err := c.PrepareContext(ctx, "Insert into ShopItem(title, description, price) values(?, ?, ?)")
+
+	_, err = prepared.ExecContext(
+		ctx,
 		item.Title,
 		item.Description,
 		item.Price,
 	)
 
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := res.LastInsertId()
-
-	if err != nil {
-		return 0, err
-	}
-
-	return id, err
-
+	return err
 }
 
-func (s shopListRepositoryImpl) Update(item model.ShopItem) (int64, error) {
+func (s shopListRepositoryImpl) Update(item model.ShopItem) error {
 	ctx := context.Background()
 	c, err := s.connect(ctx)
 
 	if err != nil {
-		return 0, fmt.Errorf("error connecting to database")
+		return fmt.Errorf("error connecting to database")
 	}
 
 	defer c.Close()
 
-	res, err := c.ExecContext(
+	stmt, err := c.PrepareContext(ctx, "Update ShopItem set title = ?, description = ?, price = ? where id = ?")
+
+	res, err := stmt.ExecContext(
 		ctx,
-		"Update ShopItem set title = ?, description = ?, price = ? where id = ? ",
 		item.Title,
 		item.Description,
 		item.Price,
@@ -83,48 +76,44 @@ func (s shopListRepositoryImpl) Update(item model.ShopItem) (int64, error) {
 	)
 
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	affectedRows, err := res.RowsAffected()
+	_, err = res.RowsAffected()
 
 	if err != nil {
-		return 0, fmt.Errorf("error obtaining affected rows")
+		return fmt.Errorf("error obtaining affected rows")
 	}
 
-	return affectedRows, err
+	return err
 }
 
-func (s shopListRepositoryImpl) Delete(id int64) (int64, error) {
+func (s shopListRepositoryImpl) Delete(id int64) error {
 	ctx := context.Background()
 	c, err := s.connect(ctx)
 
 	if err != nil {
-		return 0, fmt.Errorf("error connecting to database")
+		return fmt.Errorf("error connecting to database")
 	}
 
 	defer c.Close()
 
-	res, err := c.ExecContext(
-		ctx,
-		"Delete from ShopItem where id = ? ",
-		id,
-	)
+	prepared, err := c.PrepareContext(ctx, "Delete from ShopItem where id = ?")
 
 	if err != nil {
-		return 0, fmt.Errorf("error deleting the shopitem")
+		return fmt.Errorf("error preparing statement")
 	}
 
-	affectedRows, err := res.RowsAffected()
+	_, err = prepared.ExecContext(ctx, id)
 
 	if err != nil {
-		return 0, fmt.Errorf("error obtaining affected rows")
+		return fmt.Errorf("error deleting the shopitem")
 	}
 
-	return affectedRows, err
+	return err
 }
 
-func (s shopListRepositoryImpl) Get(id int64) (*model.ShopItem, error) {
+func (s shopListRepositoryImpl) GetByID(id int64) (*model.ShopItem, error) {
 	ctx := context.Background()
 
 	c, err := s.connect(ctx)
@@ -170,7 +159,7 @@ func (s shopListRepositoryImpl) GetAll() ([]*model.ShopItem, error) {
 
 	rows, err := c.QueryContext(
 		ctx,
-		"select id, title, description, price from ShopItem",
+		"Select id, title, description, price from ShopItem",
 	)
 
 	if err != nil {
